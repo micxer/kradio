@@ -10,6 +10,5 @@ mp3 file is playing.
 
 It can be operated using buttons on the radio itself or via WiFi using a smartphone app.
 
-This is based on an article of the german [Make Magazin 1/19](https://www.heise.de/select/make/2019/1/1551100253897264).
-
-\* Affiliate Link
+This is inspired by an article of the german [Make Magazin
+1/19](https://www.heise.de/select/make/2019/1/1551100253897264) but heavily modified and improved.
