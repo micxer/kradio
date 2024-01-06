@@ -29,7 +29,7 @@ from lc_display import lcd
 import subprocess
 import logging
 
-from prog.display import get_rolling_text
+from display import get_rolling_text
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("radio")
