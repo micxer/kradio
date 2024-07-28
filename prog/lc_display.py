@@ -1,8 +1,9 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-15 -*-
 
-import i2c_lib
 from time import sleep
+
+from . import i2c_lib
 
 # LCD Address
 ADDRESS = 0x27
@@ -58,7 +59,7 @@ class lcd:
   Class to control the 16x2 I2C LCD display from sainsmart from the Raspberry Pi
   """
 
-  def __init__(self):
+  def __init__(self) -> None:
     """Setup the display, turn on backlight and text display + ...?"""
     self.device = i2c_lib.i2c_device(ADDRESS,1)
 
@@ -73,23 +74,23 @@ class lcd:
     self.write(LCD_ENTRYMODESET | LCD_ENTRYLEFT)
     sleep(0.2)
 
-  def strobe(self, data):
+  def strobe(self, data: int) -> None:
     """clocks EN to latch command"""
     self.device.write_cmd(data | En | LCD_BACKLIGHT)
     sleep(0.0005)
     self.device.write_cmd(((data & ~En) | LCD_BACKLIGHT))
     sleep(0.001)
 
-  def write_four_bits(self, data):
+  def write_four_bits(self, data: int) -> None:
     self.device.write_cmd(data | LCD_BACKLIGHT)
     self.strobe(data)
 
-  def write(self, cmd, mode=0):
+  def write(self, cmd: int, mode: int=0) -> None:
     """write a command to lcd"""
     self.write_four_bits(mode | (cmd & 0xF0))
     self.write_four_bits(mode | ((cmd << 4) & 0xF0))
 
-  def display_string(self, string, line):
+  def display_string(self, string: str, line: int) -> None:
     """display a string on the given line of the display, 1 or 2, string is truncated to 16 chars and centred"""
     centered_string = string.center(20)
     if line == 1:
@@ -123,19 +124,19 @@ class lcd:
       x = x-1
 
 
-  def clear(self):
+  def clear(self) -> None:
     """clear lcd and set to home"""
     self.write(LCD_CLEARDISPLAY)
     self.write(LCD_RETURNHOME)
 
-  def backlight_off(self):
+  def backlight_off(self) -> None:
     """turn off backlight, anything that calls write turns it on again"""
     self.device.write_cmd(LCD_NOBACKLIGHT)
 
-  def display_off(self):
+  def display_off(self) -> None:
     """turn off the text display"""
     self.write(LCD_DISPLAYCONTROL | LCD_DISPLAYOFF)
 
-  def display_on(self):
+  def display_on(self) -> None:
     """turn on the text display"""
     self.write(LCD_DISPLAYCONTROL | LCD_DISPLAYON)

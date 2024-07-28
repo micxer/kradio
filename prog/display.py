@@ -1,8 +1,9 @@
 import logging
+from typing import Tuple
 
 logger = logging.getLogger(__name__)
 
-def get_rolling_text(text, current_pos):
+def get_rolling_text(text: str, current_pos: int) -> Tuple[str, int]:
     logger.debug("get_rolling_text")
     if len(text) <= 20:
         return text, 0
