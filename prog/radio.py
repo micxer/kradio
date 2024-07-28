@@ -319,7 +319,6 @@ def ZeilenABCD_RUMode(v):
     verw_speicherBASH = "df -h | grep /dev/root | awk '{print $5}'"                     # Befehl zum Auslesen des belegten Speichers in Prozent
     verw_speicher = subprocess.check_output([verw_speicherBASH], shell=True, text=True) # Auslesen der prozentualen Belegung
     verw_speicher = verw_speicher.strip("\n").replace('%', '')                                       # Umbruch durch Leerzeichen ersetzen
-    frei_speicher = 100 - int(verw_speicher)
 
     # Version
     za = "--------------------"
@@ -403,7 +402,6 @@ def ZeileB_RAMode():                                                            
     if st_tmp == "":                                                                 # Wenn der Sender mal länger zum Starten benötigt oder keine W-LAN Verbindung besteht.
         zb = "  Warte auf Sender  "                                                  # Dann Sendersuche anzeigen
         return zb
-        exit
     else:
         try:
             st_int = int(st_tmp)                                                     # Sendernummer von str zu int
@@ -423,7 +421,7 @@ def ZeileB_RAMode():                                                            
                 sn[st_anwahl] = '{message: <15}'.format(message=sn[st_anwahl])       # Format auf 15 Zeichen erweitern, dabei werden Leerzeichen eingefügt.
             zb = "(" + st + ") " + sn[st_anwahl]                                     # String Sendernummer und Namen
             return zb                                                                # Rückgabe String für Zeile
-        except:                                                                      # Falls es Probleme bei der Sendernummererkennung gibt
+        except Exception:                                                                      # Falls es Probleme bei der Sendernummererkennung gibt
             zb = "Sender nicht erkannt"                                              # z.B. wenn Radiosenderanzahl in radio_sender.m2u im laufenden Betrieb dezimiert wird
             return zb
 
@@ -431,7 +429,7 @@ def ZeileB_RAMode():                                                            
 def ZeileC_RAMode_MP3Mode():                                                         # Funktionsdefinition zum Ermitteln des Strings für Zeile C im RadioModus & MP3 Modus
     logger.debug("ZeileC_RAMode_MP3Mode")
     info_tmp = subprocess.check_output([mpc["songinfo"]], shell=True, text=True)
-    if not "#" in info_tmp:
+    if "#" not in info_tmp:
         info_tmp = info_tmp.strip("\n")                                              # Umbruch raus
         info_tmp = info_tmp.strip()                                                  # Schmierzeichen entfernen
         # info_tmp = ":" + info_tmp
