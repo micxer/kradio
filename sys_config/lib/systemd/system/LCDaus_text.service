@@ -5,6 +5,8 @@ Before=umount.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/python /home/kradio/raspiradio/prog/LCDaus_text.py
+ExecStart=/usr/bin/python3 -m prog.LCDaus_text
+WorkingDirectory=/home/kradio/raspiradio
+
 [Install]
 WantedBy=halt.target poweroff.target
