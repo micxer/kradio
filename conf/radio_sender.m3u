@@ -1,7 +1,7 @@
 ##########################################################################
-# Es sind max. 99 Sender-Stationen in dieser Liste einzutragen.          #
-# Format:        SENDERSTREAMADRESSE # SENDERNAME                        #
-# Sendername max. 15 Zeichen                                             #
+# Maximum of 99 stations in this list.                                   #
+# Format: station_stream_address # stationname                           #
+# Station name max. 15 characters                                        #
 ##########################################################################
 
 http://dispatcher.rndfnk.com/br/br1/obb/aac/low # Bayern 1
@@ -9,11 +9,13 @@ http://dispatcher.rndfnk.com/br/br24live/live/aac/low # BR 24
 http://dispatcher.rndfnk.com/br/br3/live/aac/low # Bayern 3
 https://live.stream.charivari.de/955charivari-webradio # Charivari
 https://live.stream.charivari.de/955charivari-partyhitmix # CV Party Hitmix
-https://streaming.radiostreamlive.com/radiosantaclaus_devices # RadioSantaClaus
-https://streams.80s80s.de/italohits/mp3-192 # 80s80s Italo Disco
-https://streams.80s80s.de/dance/mp3-192/ # 80s80s DANCE
-https://streams.80s80s.de/web/mp3-192/ # 80s80s in the Mix
-https://streams.80s80s.de/mj/mp3-192/ # 80s80s Michael Jackson
-https://streams.80s80s.de/soul/mp3-192/ # 80s80s FUNK & SOUL
-https://streams.80s80s.de/party/mp3-192/ # 80s80s PARTY
+https://streams.90s90s.de/90s90s-sommerhits/aac-64/streams.90s90s.de/ # 90s90s Sommerhits
+# https://streaming.radiostreamlive.com/radiosantaclaus_devices # RadioSantaClaus
+https://streams.80s80s.de/italohits/aac-64/streams.80s80s.de/ # 80s Italo Disco
+https://streams.80s80s.de/dance/aac-64/streams.80s80s.de/ # 80s80s Dance
+https://streams.80s80s.de/mix/aac-64/streams.80s80s.de/ # 80s80s InTheMix
+https://streams.80s80s.de/soul/aac-64/streams.80s80s.de/ # 80s80s Funk&Soul
+https://streams.80s80s.de/party/aac-64/streams.80s80s.de/ # 80s80s Partyhits
 https://54house.fm:9013/stream # 54house.fm
+https://streamer.radio.co/s2c3cc784b/listen # Electro Swing Rd
+https://streambbr.ir-media-tec.com/straetermusik/mp3-128/dmhubweb/play.mp3 # Sträter: Musik
