@@ -20,16 +20,17 @@
 # STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import RPi.GPIO as GPIO
-import time
-import os
-import sys
-from datetime import date
-from lc_display import lcd
-import subprocess
 import logging
+import os
+import subprocess
+import sys
+import time
+from datetime import date
 
-from display import get_rolling_text
+import RPi.GPIO as GPIO
+
+from .display import get_rolling_text
+from .lc_display import lcd
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("radio")
