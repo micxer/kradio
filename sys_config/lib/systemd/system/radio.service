@@ -5,6 +5,7 @@ After=network.target
 
 [Service]
 Type=simple
+User=kradio
 WorkingDirectory=/home/kradio/raspiradio
 ExecStart=/usr/bin/python3 -m prog.radio
 
