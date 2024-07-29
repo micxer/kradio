@@ -1,2 +1,2 @@
-smbus2==0.4.2
-RPi.GPIO==0.7.1
+rpi-gpio2 @ git+https://github.com/underground-software/RPi.GPIO2.git@75d8d9e8be7e145178893cd833c1f60c7004e55d ; python_version >= "3.9" and python_version < "3.10"
+smbus2==0.4.3 ; python_version >= "3.9" and python_version < "3.10"
