@@ -190,6 +190,7 @@ def RAMode():
     if (modus == 0) or (modus == 31) or (modus == 32):
         modus = 1
         wlanein()                                                    # W-LAN Adapter ein
+        os.system(mpc["volumestartup"])
     modus = 1                                                        # Modus RAMode
     os.system(mpc["clear"])                                          # mpc clear
     os.system(mpc["loadlist"])                                       # mpc load list
