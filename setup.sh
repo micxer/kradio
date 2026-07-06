@@ -35,6 +35,6 @@ then
 fi
 
 # Python dependencies
-#pip install -r requirements.txt
+uv sync
 
 sudo systemctl restart kradio.service
