@@ -1,24 +1,27 @@
-[tool.poetry]
+[project]
 name = "kradio"
 version = "1.0.0"
 description = "A simple kitchen webradio"
-authors = ["micxer <micxer@micxer.de>"]
-license = "MIT License"
+authors = [{ name = "micxer", email = "micxer@micxer.de" }]
+license = { text = "MIT License" }
 readme = "README.md"
-package-mode = false
+requires-python = "~=3.11.0"
+dependencies = [
+    "smbus2~=0.4.3",
+    "rpi-gpio2 @ git+https://github.com/underground-software/RPi.GPIO2.git@v0.4.0",
+]
 
-[tool.poetry.dependencies]
-python = "~3.9"
-smbus2 = "~0.4.3"
-"RPi.GPIO2" = { git = "https://github.com/underground-software/RPi.GPIO2.git", tag = "v0.4.0" }
+[dependency-groups]
+dev = [
+    "pytest>=7.4.4",
+    "mock>=5.1.0",
+    "mypy>=1.11.0",
+    "types-rpi-gpio>=0.7.0.20240314",
+]
 
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.4"
-mock = "^5.1.0"
-mypy = "^1.11.0"
-types-rpi-gpio = "^0.7.0.20240314"
+[tool.uv]
+package = false
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
