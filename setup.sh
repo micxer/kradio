@@ -8,7 +8,7 @@ then
 fi
 
 # install necessary software
-sudo apt install -y mpd mpc mpg321 alsa-utils python3-pip i2c-tools python3-gpiod libgpiod-dev
+sudo apt install -y mpd mpc mpg321 alsa-utils python3-pip i2c-tools
 
 # create necessary firs
 mkdir -p /home/kradio/raspiradio/music
