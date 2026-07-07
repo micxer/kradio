@@ -27,7 +27,10 @@ import sys
 import time
 from datetime import date
 
-import RPi.GPIO as GPIO
+import gpiod
+import threading
+from datetime import timedelta
+from gpiod.line import Direction, Edge, Value
 
 from .display import get_rolling_text
 from .lc_display import lcd
@@ -94,32 +97,20 @@ aktuellesZeichen = ""                                          # Vorbelegung
 bez = ""                                                       # Vorbelegung für bisher eingewaehlte Zeichen
 
 
-###############################
-# Board-Pin Nummern verwenden #
-###############################
-GPIO.setmode(GPIO.BOARD)
+#############################################
+# BCM GPIO offsets (BOARD pin equivalents)  #
+# BOARD 7->BCM 4, 13->27, 15->22, 16->23,  #
+# 29->5, 31->6                              #
+#############################################
+KeyRight      = 4   # green  (BOARD 7)
+KeyLeft       = 23  # yellow (BOARD 16)
+KeyOk         = 27  # blue   (BOARD 13)
+KeyVolumeUp   = 22  # purple (BOARD 15)
+KeyVolumeDown = 5   # grey   (BOARD 29)
+KeyStandby    = 6   # white  (BOARD 31)
 
-
-#############
-# Pin Namen #
-#############
-KeyRight=7         # green
-KeyLeft=16         # yellow
-KeyOk=13           # blue
-KeyVolumeUp=15     # purple
-KeyVolumeDown=29   # grey
-KeyStandby=31      # white
-
-
-##################
-# Pins als Input #
-##################
-GPIO.setup(KeyRight, GPIO.IN)
-GPIO.setup(KeyLeft, GPIO.IN)
-GPIO.setup(KeyOk, GPIO.IN)
-GPIO.setup(KeyVolumeUp, GPIO.IN)
-GPIO.setup(KeyVolumeDown, GPIO.IN)
-GPIO.setup(KeyStandby, GPIO.IN)
+BUTTON_OFFSETS = [KeyRight, KeyLeft, KeyOk, KeyVolumeUp, KeyVolumeDown, KeyStandby]
+GPIO_CHIP = "/dev/gpiochip0"
 
 
 ###################
@@ -212,9 +203,9 @@ def SBMode(pin):
     logger.debug("SBMode")
     global modus, bez
     time.sleep(0.5)                                               # Zeit für Doppeltastenbedienung geben
-    if (GPIO.input(KeyRight) == GPIO.LOW) and (GPIO.input(KeyStandby) == GPIO.LOW):   # Wenn (A)Taste und (D)Taste zusammen gedrückt werden, dann NEUSTART
+    if (_gpio_value(KeyRight) == Value.INACTIVE) and (_gpio_value(KeyStandby) == Value.INACTIVE):   # Wenn (A)Taste und (D)Taste zusammen gedrückt werden, dann NEUSTART
         RBMode()
-    elif (GPIO.input(KeyLeft) == GPIO.LOW) and (GPIO.input(KeyStandby) == GPIO.LOW): # Wenn (B)Taste und (D)Taste zusammen gedrückt werden, dann RUNTERFAHREN
+    elif (_gpio_value(KeyLeft) == Value.INACTIVE) and (_gpio_value(KeyStandby) == Value.INACTIVE): # Wenn (B)Taste und (D)Taste zusammen gedrückt werden, dann RUNTERFAHREN
         SDMode()
     elif modus == 32:
         modus = 0
@@ -272,7 +263,7 @@ def ZeilenABCD_RUMode(v):
         zd = "gedrückt halten.    "
         anzeige(za,zb,zc,zd)
         time.sleep(5)
-        if (GPIO.input(KeyOk) == GPIO.LOW):
+        if (_gpio_value(KeyOk) == Value.INACTIVE):
             za = "--------------------"
             zb = "Bedienungsanleitung "
             zc = "  wird gestartet.   "
@@ -574,18 +565,40 @@ RAMode()                   # Radio nach RunUp ohne Interrupt starten
 
 
 ######################################
-# TastenInerrupts mit Multithreading #
+# gpiod v2 setup + event thread      #
 ######################################
-# Next station
-GPIO.add_event_detect(KeyRight, GPIO.FALLING, callback=SWH, bouncetime = 200)
-# Previous station
-GPIO.add_event_detect(KeyLeft, GPIO.FALLING, callback=SWR, bouncetime = 200)
-# OK Key
-GPIO.add_event_detect(KeyStandby, GPIO.FALLING, callback=SBMode, bouncetime = 200)
-# Volume Up Key
-GPIO.add_event_detect(KeyVolumeUp, GPIO.FALLING, callback=VolumeUp, bouncetime = 200)
-# Volume Down Key
-GPIO.add_event_detect(KeyVolumeDown, GPIO.FALLING, callback=VolumeDown, bouncetime = 200)
+_line_settings = gpiod.LineSettings(
+    direction=Direction.INPUT,
+    edge_detection=Edge.FALLING,
+    debounce_period=timedelta(milliseconds=200),
+)
+_gpio_request = gpiod.request_lines(
+    GPIO_CHIP,
+    consumer="kradio",
+    config={offset: _line_settings for offset in BUTTON_OFFSETS},
+)
+
+_KEY_CALLBACKS = {
+    KeyRight:      SWH,
+    KeyLeft:       SWR,
+    KeyStandby:    SBMode,
+    KeyVolumeUp:   VolumeUp,
+    KeyVolumeDown: VolumeDown,
+}
+
+def _gpio_value(offset):
+    return _gpio_request.get_value(offset)
+
+def _event_loop():
+    while True:
+        if _gpio_request.wait_edge_events(timedelta(seconds=1)):
+            for event in _gpio_request.read_edge_events():
+                cb = _KEY_CALLBACKS.get(event.line_offset)
+                if cb:
+                    cb(event.line_offset)
+
+_event_thread = threading.Thread(target=_event_loop, daemon=True)
+_event_thread.start()
 
 
 #################
@@ -645,7 +658,7 @@ while True:
     except KeyboardInterrupt:                                 # Sonderbehandlung bei STRG+C
         break                                                 # Schleife verlassen
 
-GPIO.cleanup()                                        # Pinbelegung zurücksetzen
+_gpio_request.release()                               # GPIO Linien freigeben
 os.system(mpc["stop"])                                # Musik stoppen
 anzaus()                                              # Anzeige aus
 sys.exit()                                            # Aussteigen
