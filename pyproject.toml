@@ -9,7 +9,7 @@ requires-python = "~=3.11.0"
 dependencies = [
     "smbus2~=0.4.3",
     "rpi-gpio2 @ git+https://github.com/underground-software/RPi.GPIO2.git@v0.4.0",
-    "gpiod>=2.0.0",
+    "gpiod>=1.5.0,<2",
 ]
 
 [dependency-groups]
