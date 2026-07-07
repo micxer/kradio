@@ -7,7 +7,7 @@ After=network.target
 Type=simple
 User=kradio
 WorkingDirectory=/home/kradio/raspiradio
-ExecStart=/usr/bin/python3 -m prog.radio
+ExecStart=/home/kradio/raspiradio/.venv/bin/python -m prog.radio
 
 [Install]
 WantedBy=multi-user.target
