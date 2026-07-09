@@ -585,7 +585,7 @@ _KEY_CALLBACKS = {
     KeyVolumeDown: VolumeDown,
 }
 _BOUNCETIME = 0.2  # seconds — ignore re-triggers within this window
-_last_event_time = {}
+_last_event_time: dict[int, float] = {}
 
 def _gpio_value(offset):
     return _gpio_request.get_value(offset)
