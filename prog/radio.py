@@ -593,9 +593,12 @@ def _event_loop():
     while True:
         if _gpio_request.wait_edge_events(timedelta(seconds=1)):
             for event in _gpio_request.read_edge_events():
+                logger.warning("GPIO event: offset=%r type=%r", event.line_offset, event.event_type)
                 cb = _KEY_CALLBACKS.get(event.line_offset)
                 if cb:
                     cb(event.line_offset)
+                else:
+                    logger.warning("GPIO no callback for offset=%r keys=%r", event.line_offset, list(_KEY_CALLBACKS.keys()))
 
 _event_thread = threading.Thread(target=_event_loop, daemon=True)
 _event_thread.start()
