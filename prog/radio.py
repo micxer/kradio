@@ -27,10 +27,10 @@ import sys
 import time
 from datetime import date
 
-import gpiod
+import gpiod  # type: ignore[import-not-found]
 import threading
 from datetime import timedelta
-from gpiod.line import Direction, Edge, Value
+from gpiod.line import Direction, Edge, Value  # type: ignore[import-not-found]
 
 from .display import get_rolling_text
 from .lc_display import lcd

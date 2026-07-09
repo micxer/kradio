@@ -37,7 +37,7 @@ name = "kradio"
 version = "1.0.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "gpiod" },
+    { name = "gpiod", marker = "sys_platform == 'linux'" },
     { name = "smbus2" },
 ]
 
@@ -50,7 +50,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "gpiod", specifier = ">=2.0.0" },
+    { name = "gpiod", marker = "sys_platform == 'linux'", specifier = ">=2.0.0" },
     { name = "smbus2", specifier = "~=0.4.3" },
 ]
 
