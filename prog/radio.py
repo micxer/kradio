@@ -570,7 +570,6 @@ RAMode()                   # Radio nach RunUp ohne Interrupt starten
 _line_settings = gpiod.LineSettings(
     direction=Direction.INPUT,
     edge_detection=Edge.FALLING,
-    debounce_period=timedelta(milliseconds=200),
 )
 _gpio_request = gpiod.request_lines(
     GPIO_CHIP,
@@ -585,6 +584,8 @@ _KEY_CALLBACKS = {
     KeyVolumeUp:   VolumeUp,
     KeyVolumeDown: VolumeDown,
 }
+_BOUNCETIME = 0.2  # seconds — ignore re-triggers within this window
+_last_event_time: dict[int, float] = {}
 
 def _gpio_value(offset):
     return _gpio_request.get_value(offset)
@@ -593,6 +594,10 @@ def _event_loop():
     while True:
         if _gpio_request.wait_edge_events(timedelta(seconds=1)):
             for event in _gpio_request.read_edge_events():
+                now = time.monotonic()
+                if now - _last_event_time.get(event.line_offset, 0) < _BOUNCETIME:
+                    continue
+                _last_event_time[event.line_offset] = now
                 cb = _KEY_CALLBACKS.get(event.line_offset)
                 if cb:
                     cb(event.line_offset)
