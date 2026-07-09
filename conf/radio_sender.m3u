@@ -4,19 +4,19 @@
 # Station name max. 15 characters
 
 #EXTINF:-1,Bayern 1
-http://dispatcher.rndfnk.com/br/br1/obb/aac/low
+https://dispatcher.rndfnk.com/br/br1/obb/mp3/mid
 #EXTINF:-1,BR 24
-http://dispatcher.rndfnk.com/br/br24live/live/aac/low
+https://dispatcher.rndfnk.com/br/br24/live/mp3/mid
 #EXTINF:-1,Bayern 3
-http://dispatcher.rndfnk.com/br/br3/live/aac/low
+https://dispatcher.rndfnk.com/br/br3/live/mp3/mid
+#EXTINF:-1,radio Horeb
+https://rs16.stream24.net/horeb.mp3
 #EXTINF:-1,Charivari
 https://live.stream.charivari.de/955charivari-webradio
 #EXTINF:-1,CV Party Hitmix
 https://live.stream.charivari.de/955charivari-partyhitmix
-#EXTINF:-1,90s90s Sommerhit
+#EXTINF:-1,90s90s Sommerhits
 https://streams.90s90s.de/90s90s-sommerhits/aac-64/streams.90s90s.de/
-# #EXTINF:-1,RadioSantaClaus
-# https://streaming.radiostreamlive.com/radiosantaclaus_devices
 #EXTINF:-1,80s Italo Disco
 https://streams.80s80s.de/italohits/aac-64/streams.80s80s.de/
 #EXTINF:-1,80s80s Dance
@@ -31,5 +31,5 @@ https://streams.80s80s.de/party/aac-64/streams.80s80s.de/
 https://54house.fm:9013/stream
 #EXTINF:-1,Electro Swing Rd
 https://streamer.radio.co/s2c3cc784b/listen
-#EXTINF:-1,Sträter: Musik
-https://streambbr.ir-media-tec.com/straetermusik/mp3-128/dmhubweb/play.mp3
+# #EXTINF:-1,RadioSantaClaus
+# https://streaming.radiostreamlive.com/radiosantaclaus_devices
