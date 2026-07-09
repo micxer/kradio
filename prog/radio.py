@@ -130,8 +130,10 @@ def wlanein():
 
 # W-LAN Adapter Aus
 def wlanaus():
-    logger.debug("wlanaus")
-    os.system("sudo ip link set wlan0 down")
+    # not switiching off because switching on taeks too long
+    pass
+    #logger.debug("wlanaus")
+    #os.system("sudo ip link set wlan0 down")
 
 # Anzeige aus
 def anzaus():
