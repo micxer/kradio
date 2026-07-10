@@ -51,7 +51,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "gpiod", marker = "sys_platform == 'linux'", specifier = ">=2.0.0" },
-    { name = "smbus2", specifier = "~=0.4.3" },
+    { name = "smbus2", specifier = "~=0.6.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -175,11 +175,11 @@ wheels = [
 
 [[package]]
 name = "smbus2"
-version = "0.4.3"
+version = "0.6.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/98/17/9663936e52a348b3ad1c85e6ca6071d2abf00a5f64f2df50bec8dcca6e16/smbus2-0.4.3.tar.gz", hash = "sha256:36f2288a8e1a363cb7a7b2244ec98d880eb5a728a2494ac9c71e9de7bf6a803a", size = 16801, upload-time = "2023-08-25T19:55:24.099Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/87/37/b3f7b501502c4915ba3819d1dc277bf3f5fae4a9d067caa4f502aaddd889/smbus2-0.6.1.tar.gz", hash = "sha256:2b043372abf8f6029a632c3aab36b641c5d5872b1cbad599fc68e17ac4fd90a5", size = 17274, upload-time = "2026-04-09T20:37:54.821Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d6/5b/3ada173f07b4ec9bfa03b779e59ecada48eb7cb1a29f51cfce70edce7f3f/smbus2-0.4.3-py2.py3-none-any.whl", hash = "sha256:a2fc29cfda4081ead2ed61ef2c4fc041d71dd40a8d917e85216f44786fca2d1d", size = 11553, upload-time = "2023-08-25T19:55:23.17Z" },
+    { url = "https://files.pythonhosted.org/packages/96/f2/c78a68bd739ac8fc608747cff73a4db3b19f3135658ed4e64374f6425cbf/smbus2-0.6.1-py2.py3-none-any.whl", hash = "sha256:650feeb27ca0ed58b07db4c10201c2a662c41305b7bf6e5fab9d888056f48180", size = 11767, upload-time = "2026-04-09T20:37:53.728Z" },
 ]
 
 [[package]]
