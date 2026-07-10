@@ -393,6 +393,8 @@ def volume_down(pin: int) -> None:
 # Startup          #
 ####################
 scroll_pos = 0
+_last_scroll_time = 0.0
+SCROLL_INTERVAL = 0.2  # seconds between scroll advances
 station_count = 0
 current_station = 1
 mode = 0
@@ -455,7 +457,12 @@ while True:
             line1 = build_line1()
             line2 = build_line2_radio()
             scroll_text, _ = build_line3()
-            line3, scroll_pos = get_rolling_text(scroll_text, scroll_pos)
+            now = time.monotonic()
+            if now - _last_scroll_time >= SCROLL_INTERVAL:
+                line3, scroll_pos = get_rolling_text(scroll_text, scroll_pos)
+                _last_scroll_time = now
+            else:
+                line3, _ = get_rolling_text(scroll_text, scroll_pos)
             line4 = build_line4()
             show(line1, line2, line3, line4)
         elif mode == 2:
@@ -463,7 +470,12 @@ while True:
             line1 = build_line1()
             line2 = build_line2_mp3()
             scroll_text, _ = build_line3()
-            line3, scroll_pos = get_rolling_text(scroll_text, scroll_pos)
+            now = time.monotonic()
+            if now - _last_scroll_time >= SCROLL_INTERVAL:
+                line3, scroll_pos = get_rolling_text(scroll_text, scroll_pos)
+                _last_scroll_time = now
+            else:
+                line3, _ = get_rolling_text(scroll_text, scroll_pos)
             line4 = build_line4()
             show(line1, line2, line3, line4)
         elif mode == 31:
