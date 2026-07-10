@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: iso-8859-15 -*-
 
 from time import sleep
 
@@ -102,26 +101,20 @@ class lcd:
     if line == 4:
       self.write(0xD4)
 
-    x = 0
+    # HD44780 ROM A00 code points for German umlauts
+    _UMLAUT_MAP = {
+      'ä': 225, 'Ä': 225,
+      'ö': 239, 'Ö': 239,
+      'ü': 245, 'Ü': 245,
+      'ß': 226,
+    }
     for char in centered_string:
-      if ord(char) > 127:         # create german umlauts
-        if (ord(char) == 164) or (ord(char) == 132):  # ä or Ä to HD44780 ä
-          self.write(225, Rs)
-        elif (ord(char) == 182) or (ord(char) == 150):   # ö or Ö to HD44780 ö
-          self.write(239, Rs)
-        elif (ord(char) == 188) or (ord(char) == 156):   # ü or Ü to HD44780 ü
-          self.write(245, Rs)
-        elif ord(char) == 159: # ß to HD44780 ß
-          self.write(226, Rs)
-        elif ord(char) == 195: #  count 195 characters but don't show
-         x = x+1
-        else:
-          self.write(46, Rs) # unknown characters as "."
+      if char in _UMLAUT_MAP:
+        self.write(_UMLAUT_MAP[char], Rs)
+      elif ord(char) > 127:
+        self.write(46, Rs)  # unsupported non-ASCII → "."
       else:
-        self.write(ord(char), Rs) # print ASCII without conversion
-    while x > 0: # print whitespace to clean previous output
-      self.write(32, Rs)
-      x = x-1
+        self.write(ord(char), Rs)
 
 
   def clear(self) -> None:
