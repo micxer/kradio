@@ -4,7 +4,7 @@ from time import monotonic, sleep
 from .lc_display import lcd
 
 LCD_WIDTH = 20
-SCROLL_INTERVAL = 0.2  # seconds between scroll advances per row
+SCROLL_INTERVAL = 0.5  # seconds between scroll advances per row
 
 
 class DisplayManager:
@@ -20,7 +20,7 @@ class DisplayManager:
         self._desired: dict[int, str] = {1: "", 2: "", 3: "", 4: ""}
         self._written: dict[int, str | None] = {1: None, 2: None, 3: None, 4: None}
         self._scroll_pos: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
-        self._last_scroll: dict[int, float] = {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0}
+        self._last_scroll: dict[int, float] = {n: monotonic() for n in range(1, 5)}
         self._lock = threading.Lock()
         self._paused = False
         t = threading.Thread(target=self._run, daemon=True)
@@ -29,17 +29,18 @@ class DisplayManager:
     def set(self, line1: str, line2: str, line3: str, line4: str) -> None:
         with self._lock:
             new = {1: line1, 2: line2, 3: line3, 4: line4}
+            now = monotonic()
             for n, text in new.items():
                 if text != self._desired[n]:
                     self._scroll_pos[n] = 0
-                    self._last_scroll[n] = 0.0
+                    self._last_scroll[n] = now
             self._desired = new
 
     def set_line(self, n: int, text: str) -> None:
         with self._lock:
             if text != self._desired[n]:
                 self._scroll_pos[n] = 0
-                self._last_scroll[n] = 0.0
+                self._last_scroll[n] = monotonic()
             self._desired[n] = text
 
     def backlight_off(self) -> None:
