@@ -466,7 +466,6 @@ while True:
             line4 = build_line4()
             show(line1, line2, line3, line4)
             time.sleep(3.0)
-            show("--------------------", line2, line3, "--------------------")
             time.sleep(1.0)
             display_off()
             mode = 32
