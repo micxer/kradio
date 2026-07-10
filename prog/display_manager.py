@@ -69,7 +69,8 @@ class DisplayManager:
                             self._scroll_pos[n] = 0
                             window = text
                         else:
-                            if now - self._last_scroll[n] >= SCROLL_INTERVAL:
+                            interval = SCROLL_INTERVAL * 3 if self._scroll_pos[n] == 0 else SCROLL_INTERVAL
+                            if now - self._last_scroll[n] >= interval:
                                 self._scroll_pos[n] += 1
                                 if self._scroll_pos[n] > len(text) - LCD_WIDTH:
                                     self._scroll_pos[n] = 0
