@@ -461,11 +461,8 @@ while True:
             show(line1, line2, line3, line4)
         elif mode == 31:
             logger.debug("Mode 31: Going into standby")
-            line1 = build_line1()
             line2, line3 = build_lines23_standby()
-            line4 = build_line4()
-            show(line1, line2, line3, line4)
-            time.sleep(3.0)
+            show("--------------------", line2, line3, "--------------------")
             time.sleep(1.0)
             display_off()
             mode = 32
