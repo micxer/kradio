@@ -311,9 +311,9 @@ def build_line4() -> str:
     date_str = time.strftime("%d.%m.%Y")
     return date_str + "       " + day_abbr
 
-def build_lines23_standby() -> tuple[str, str]:
-    logger.debug("build_lines23_standby")
-    return "      Standby       ", "     WiFi off       "
+def build_line2_standby() -> str:
+    logger.debug("build_line2_standby")
+    return "      Standby       "
 
 def build_reboot_screen() -> tuple[str, str, str, str]:
     logger.debug("build_reboot_screen")
@@ -457,9 +457,9 @@ while True:
             show(line1, line2, line3, line4)
         elif mode == 31:
             logger.debug("Mode 31: Going into standby")
-            line2, line3 = build_lines23_standby()
-            show("--------------------", line2, line3, "--------------------")
-            time.sleep(1.0)
+            line2 = build_line2_standby()
+            show("--------------------", line2, "", "--------------------")
+            time.sleep(3.0)
             display_off()
             mode = 32
         elif mode == 32:
