@@ -240,11 +240,7 @@ def show_startup_screen(v: str) -> None:
     disk_usage = disk_usage.strip("\n").replace('%', '')
 
     show("--------------------", "    RasPi Radio     ", str(v), "--------------------")
-    time.sleep(1)
-
-    show("--------------------", " Frohe Weihnachten  ", "    Schatz! :-*     ", "--------------------")
     time.sleep(2)
-
 
 def build_line1() -> str:
     logger.debug("build_line1")
