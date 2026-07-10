@@ -1,21 +1,26 @@
 import threading
-from time import sleep
+from time import monotonic, sleep
 
 from .lc_display import lcd
+
+LCD_WIDTH = 20
+SCROLL_INTERVAL = 0.2  # seconds between scroll advances per row
 
 
 class DisplayManager:
     """Owns the LCD hardware and writes to it from a background thread.
 
-    The main loop calls set() to declare desired display content and returns
-    immediately. The background thread detects which rows changed and sends
-    only those to the hardware.
+    The main loop calls set() with full text strings. Rows longer than
+    LCD_WIDTH are scrolled automatically; shorter rows are displayed as-is.
+    Only changed rows are sent to hardware each cycle.
     """
 
     def __init__(self) -> None:
         self._lcd = lcd()
         self._desired: dict[int, str] = {1: "", 2: "", 3: "", 4: ""}
         self._written: dict[int, str | None] = {1: None, 2: None, 3: None, 4: None}
+        self._scroll_pos: dict[int, int] = {1: 0, 2: 0, 3: 0, 4: 0}
+        self._last_scroll: dict[int, float] = {1: 0.0, 2: 0.0, 3: 0.0, 4: 0.0}
         self._lock = threading.Lock()
         self._paused = False
         t = threading.Thread(target=self._run, daemon=True)
@@ -23,10 +28,18 @@ class DisplayManager:
 
     def set(self, line1: str, line2: str, line3: str, line4: str) -> None:
         with self._lock:
-            self._desired = {1: line1, 2: line2, 3: line3, 4: line4}
+            new = {1: line1, 2: line2, 3: line3, 4: line4}
+            for n, text in new.items():
+                if text != self._desired[n]:
+                    self._scroll_pos[n] = 0
+                    self._last_scroll[n] = 0.0
+            self._desired = new
 
     def set_line(self, n: int, text: str) -> None:
         with self._lock:
+            if text != self._desired[n]:
+                self._scroll_pos[n] = 0
+                self._last_scroll[n] = 0.0
             self._desired[n] = text
 
     def backlight_off(self) -> None:
@@ -44,17 +57,30 @@ class DisplayManager:
 
     def _run(self) -> None:
         while True:
+            now = monotonic()
+            todo: dict[int, str] = {}
+
             with self._lock:
-                if self._paused:
-                    todo: dict[int, str] = {}
-                else:
-                    todo = {
-                        n: t
-                        for n, t in self._desired.items()
-                        if t != self._written[n]
-                    }
-            for n, text in todo.items():
-                self._lcd.display_string(text, n)
+                if not self._paused:
+                    for n in range(1, 5):
+                        text = self._desired[n]
+                        if len(text) <= LCD_WIDTH:
+                            self._scroll_pos[n] = 0
+                            window = text
+                        else:
+                            if now - self._last_scroll[n] >= SCROLL_INTERVAL:
+                                self._scroll_pos[n] += 1
+                                if self._scroll_pos[n] > len(text) - LCD_WIDTH:
+                                    self._scroll_pos[n] = 0
+                                self._last_scroll[n] = now
+                            pos = self._scroll_pos[n]
+                            window = text[pos:pos + LCD_WIDTH]
+                        if window != self._written[n]:
+                            todo[n] = window
+
+            for n, window in todo.items():
+                self._lcd.display_string(window, n)
                 with self._lock:
-                    self._written[n] = text
+                    self._written[n] = window
+
             sleep(0.05)

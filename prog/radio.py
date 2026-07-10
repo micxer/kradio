@@ -32,7 +32,6 @@ import threading
 from datetime import timedelta
 from gpiod.line import Direction, Edge, Value  # type: ignore[import-not-found]
 
-from .display import get_rolling_text
 from .display_manager import DisplayManager
 
 logging.basicConfig(level=logging.WARNING)
@@ -301,15 +300,12 @@ def build_line2_mp3() -> str:
     logger.debug("build_line2_mp3")
     return "      mp3-Mix       "
 
-def build_line3() -> tuple[str, int]:
+def build_line3() -> str:
     logger.debug("build_line3")
     song_info = subprocess.check_output([mpc["songinfo"]], shell=True, text=True)
     if "#" not in song_info:
-        song_info = song_info.strip("\n").strip().lstrip()
-        scroll_text = song_info
-        scroll_text_len = len(scroll_text)
-        return scroll_text, scroll_text_len
-    return "---", 3
+        return song_info.strip("\n").strip().lstrip()
+    return "---"
 
 def build_line4() -> str:
     logger.debug("build_line4")
@@ -392,9 +388,6 @@ def volume_down(pin: int) -> None:
 ####################
 # Startup          #
 ####################
-scroll_pos = 0
-_last_scroll_time = 0.0
-SCROLL_INTERVAL = 0.2  # seconds between scroll advances
 station_count = 0
 current_station = 1
 mode = 0
@@ -456,26 +449,14 @@ while True:
             logger.debug("Mode 1: Radio")
             line1 = build_line1()
             line2 = build_line2_radio()
-            scroll_text, _ = build_line3()
-            now = time.monotonic()
-            if now - _last_scroll_time >= SCROLL_INTERVAL:
-                line3, scroll_pos = get_rolling_text(scroll_text, scroll_pos)
-                _last_scroll_time = now
-            else:
-                line3, _ = get_rolling_text(scroll_text, scroll_pos)
+            line3 = build_line3()
             line4 = build_line4()
             show(line1, line2, line3, line4)
         elif mode == 2:
             logger.debug("Mode 2: MP3 Player")
             line1 = build_line1()
             line2 = build_line2_mp3()
-            scroll_text, _ = build_line3()
-            now = time.monotonic()
-            if now - _last_scroll_time >= SCROLL_INTERVAL:
-                line3, scroll_pos = get_rolling_text(scroll_text, scroll_pos)
-                _last_scroll_time = now
-            else:
-                line3, _ = get_rolling_text(scroll_text, scroll_pos)
+            line3 = build_line3()
             line4 = build_line4()
             show(line1, line2, line3, line4)
         elif mode == 31:
