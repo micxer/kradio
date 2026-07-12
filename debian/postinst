@@ -1,0 +1,26 @@
+#!/bin/sh
+set -e
+
+# Install build deps needed to compile gpiod C extension natively on the Pi
+apt-get install -y gcc python3-dev libgpiod-dev
+
+# Create system user (idempotent)
+if ! id kradio > /dev/null 2>&1; then
+    useradd --system --no-create-home --home /opt/kradio kradio
+fi
+usermod -aG i2c kradio
+
+mkdir -p /opt/kradio/music
+
+# Build venv and install kradio wheel (compiles gpiod from source natively)
+python3 -m venv /opt/kradio/.venv
+/opt/kradio/.venv/bin/pip install /opt/kradio/kradio-*.whl
+
+# Apply mpd config (mpd owns /etc/mpd.conf so we can't ship it as a deb file)
+cp /opt/kradio/etc/mpd.conf /etc/mpd.conf
+
+chown -R kradio:kradio /opt/kradio
+
+systemctl daemon-reload
+systemctl enable --now kradio.service
+systemctl enable kradio-lcd-shutdown.service

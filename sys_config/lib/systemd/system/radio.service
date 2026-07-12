@@ -7,8 +7,8 @@ After=network.target
 Type=simple
 User=kradio
 SupplementaryGroups=i2c
-WorkingDirectory=/home/kradio/raspiradio
-ExecStart=/home/kradio/raspiradio/.venv/bin/kradio
+WorkingDirectory=/opt/kradio
+ExecStart=/opt/kradio/.venv/bin/kradio
 
 [Install]
 WantedBy=multi-user.target

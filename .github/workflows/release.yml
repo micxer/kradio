@@ -25,6 +25,9 @@ jobs:
 
       - run: uv sync --group dev
 
+      - name: Install fpm
+        run: gem install fpm
+
       - name: Run semantic release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

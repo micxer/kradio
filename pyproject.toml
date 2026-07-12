@@ -32,7 +32,7 @@ testpaths = ["test"]
 version_toml = ["pyproject.toml:project.version"]
 branch = "main"
 upload_to_pypi = false
-build_command = "uv build"
+build_command = "uv build && bash debian/build_deb.sh"
 
 [tool.semantic_release.changelog]
 exclude_commit_patterns = [
