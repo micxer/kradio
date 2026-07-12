@@ -42,7 +42,7 @@ class TestGetStations:
     def test_malformed_extinf_without_comma_skipped(self):
         # #EXTINF line with no comma → split(',',1) returns 1-element list → IndexError
         # Production code currently crashes; this test documents the expected safe behaviour.
-        bad_m3u = "#EXTM3U\n#EXTINF:-1\nhttps://x.com/s1\n#EXTINF:-1,Good Station\nhttps://x.com/s2\n"
+        bad_m3u = "#EXTM3U\n#EXTINF:-1\nhttps://stream.example.com/s1\n#EXTINF:-1,Good Station\nhttps://stream.example.com/s2\n"
         with patch("builtins.open", mock_open(read_data=bad_m3u)):
             try:
                 stations = radio.get_stations()
@@ -111,7 +111,7 @@ class TestBuildLine2Radio:
     def test_two_digit_station_no_zero_pad(self):
         m3u_10 = (
             "#EXTM3U\n" +
-            "".join(f"#EXTINF:-1,Station {i}\nhttps://x.com/s{i}\n" for i in range(1, 11))
+            "".join(f"#EXTINF:-1,Station {i}\nhttps://stream.example.com/s{i}\n" for i in range(1, 11))
         )
         result = self._call("10\n", m3u=m3u_10)
         assert result.startswith("(10) ")
@@ -120,7 +120,7 @@ class TestBuildLine2Radio:
     def test_name_exactly_15_not_truncated(self):
         # "ExactlyFifteenX" is exactly 15 chars — neither >15 nor <15 branch taken
         assert len("ExactlyFifteenX") == 15
-        m3u_15 = "#EXTM3U\n#EXTINF:-1,ExactlyFifteenX\nhttps://x.com/s1\n"
+        m3u_15 = "#EXTM3U\n#EXTINF:-1,ExactlyFifteenX\nhttps://stream.example.com/s1\n"
         result = self._call("1\n", m3u=m3u_15)
         assert result == "(01) ExactlyFifteenX"
 
