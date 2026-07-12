@@ -12,8 +12,8 @@
 # All advertising materials mentioning features or use of this software must display the following acknowledgement: "This product includes software developed by the University of California, Berkeley and its contributors."
 # Neither the name of the University nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+# THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 # IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
 # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
 # DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
@@ -24,12 +24,12 @@ import logging
 import os
 import subprocess
 import sys
+import threading
 import time
-from datetime import date
+from datetime import date, timedelta
+from typing import Any
 
 import gpiod  # type: ignore[import-not-found]
-import threading
-from datetime import timedelta
 from gpiod.line import Direction, Edge, Value  # type: ignore[import-not-found]
 
 from .display_manager import DisplayManager
@@ -95,7 +95,16 @@ KeyStandby    = 6   # white  (BOARD 31)
 BUTTON_OFFSETS = [KeyRight, KeyLeft, KeyOk, KeyVolumeUp, KeyVolumeDown, KeyStandby]
 GPIO_CHIP = "/dev/gpiochip0"
 
-global mode
+station_count = 0
+current_station = 1
+mode = 0
+
+display: Any = None
+_gpio_request: Any = None
+_last_event_time: dict[int, float] = {}
+
+_KEY_CALLBACKS: dict[int, Any] = {}
+_BOUNCETIME = 0.2  # seconds — ignore re-triggers within this window
 
 
 ####################
@@ -250,7 +259,7 @@ def build_line1() -> str:
         signal_level = int(subprocess.check_output([wifi_cmd], shell=True, text=True))
         if signal_level <= 25 and signal_level > 0:
             signal_bars = "*   "
-        elif signal_level > 25 and signal_level < 51:
+        elif signal_level > 25 and signal_level <= 51:
             signal_bars = "**  "
         elif signal_level > 51 and signal_level < 76:
             signal_bars = "*** "
@@ -381,42 +390,11 @@ def volume_down(pin: int) -> None:
     os.system(mpc["volumedown"])
 
 
-####################
-# Startup          #
-####################
-station_count = 0
-current_station = 1
-mode = 0
-display = DisplayManager()
-startup_mode()
-show_startup_screen(version)
-radio_mode()
-
-
 ######################################
-# gpiod v2 setup + event thread      #
+# gpiod helpers (safe to define;     #
+# _gpio_request assigned in main())  #
 ######################################
-_line_settings = gpiod.LineSettings(
-    direction=Direction.INPUT,
-    edge_detection=Edge.FALLING,
-)
-_gpio_request = gpiod.request_lines(
-    GPIO_CHIP,
-    consumer="kradio",
-    config={offset: _line_settings for offset in BUTTON_OFFSETS},
-)
-
-_KEY_CALLBACKS = {
-    KeyRight:      key_next,
-    KeyLeft:       key_prev,
-    KeyStandby:    standby_mode,
-    KeyVolumeUp:   volume_up,
-    KeyVolumeDown: volume_down,
-}
-_BOUNCETIME = 0.2  # seconds — ignore re-triggers within this window
-_last_event_time: dict[int, float] = {}
-
-def _gpio_value(offset: int) -> Value:
+def _gpio_value(offset: int) -> Any:
     return _gpio_request.get_value(offset)
 
 def _event_loop() -> None:
@@ -431,58 +409,88 @@ def _event_loop() -> None:
                 if cb:
                     cb(event.line_offset)
 
-_event_thread = threading.Thread(target=_event_loop, daemon=True)
-_event_thread.start()
+
+####################
+# Entry point      #
+####################
+def main() -> None:
+    global display, _gpio_request, _KEY_CALLBACKS
+
+    display = DisplayManager()
+    startup_mode()
+    show_startup_screen(version)
+    radio_mode()
+
+    _KEY_CALLBACKS = {
+        KeyRight:      key_next,
+        KeyLeft:       key_prev,
+        KeyStandby:    standby_mode,
+        KeyVolumeUp:   volume_up,
+        KeyVolumeDown: volume_down,
+    }
+
+    _line_settings = gpiod.LineSettings(
+        direction=Direction.INPUT,
+        edge_detection=Edge.FALLING,
+    )
+    _gpio_request = gpiod.request_lines(
+        GPIO_CHIP,
+        consumer="kradio",
+        config={offset: _line_settings for offset in BUTTON_OFFSETS},
+    )
+
+    _event_thread = threading.Thread(target=_event_loop, daemon=True)
+    _event_thread.start()
+
+    logger.debug("Start work loop...")
+    while True:
+        try:
+            if mode == 1:
+                logger.debug("Mode 1: Radio")
+                line1 = build_line1()
+                line2 = build_line2_radio()
+                line3 = build_line3()
+                line4 = build_line4()
+                show(line1, line2, line3, line4)
+            elif mode == 2:
+                logger.debug("Mode 2: MP3 Player")
+                line1 = build_line1()
+                line2 = build_line2_mp3()
+                line3 = build_line3()
+                line4 = build_line4()
+                show(line1, line2, line3, line4)
+            elif mode == 31:
+                logger.debug("Mode 31: Going into standby")
+                line2 = build_line2_standby()
+                show("--------------------", line2, "", "--------------------")
+                time.sleep(3.0)
+                display_off()
+                mode = 32
+            elif mode == 32:
+                logger.debug("Mode 32: Standby")
+                time.sleep(1.0)
+            elif mode == 4:
+                logger.debug("Mode 4: Reboot")
+                show(*build_reboot_screen())
+                time.sleep(3.0)
+                os.system("sudo reboot")
+                time.sleep(3.0)
+            elif mode == 5:
+                logger.debug("Mode 5: Shutdown")
+                show(*build_shutdown_screen())
+                time.sleep(3.0)
+                os.system("sudo halt")
+                sys.exit()
+            time.sleep(0.1)
+
+        except KeyboardInterrupt:
+            break
+
+    _gpio_request.release()
+    os.system(mpc["stop"])
+    display_off()
+    sys.exit()
 
 
-################
-# Main loop    #
-################
-logger.debug("Start work loop...")
-while True:
-    try:
-        if mode == 1:
-            logger.debug("Mode 1: Radio")
-            line1 = build_line1()
-            line2 = build_line2_radio()
-            line3 = build_line3()
-            line4 = build_line4()
-            show(line1, line2, line3, line4)
-        elif mode == 2:
-            logger.debug("Mode 2: MP3 Player")
-            line1 = build_line1()
-            line2 = build_line2_mp3()
-            line3 = build_line3()
-            line4 = build_line4()
-            show(line1, line2, line3, line4)
-        elif mode == 31:
-            logger.debug("Mode 31: Going into standby")
-            line2 = build_line2_standby()
-            show("--------------------", line2, "", "--------------------")
-            time.sleep(3.0)
-            display_off()
-            mode = 32
-        elif mode == 32:
-            logger.debug("Mode 32: Standby")
-            time.sleep(1.0)
-        elif mode == 4:
-            logger.debug("Mode 4: Reboot")
-            show(*build_reboot_screen())
-            time.sleep(3.0)
-            os.system("sudo reboot")
-            time.sleep(3.0)
-        elif mode == 5:
-            logger.debug("Mode 5: Shutdown")
-            show(*build_shutdown_screen())
-            time.sleep(3.0)
-            os.system("sudo halt")
-            sys.exit()
-        time.sleep(0.1)
-
-    except KeyboardInterrupt:
-        break
-
-_gpio_request.release()
-os.system(mpc["stop"])
-display_off()
-sys.exit()
+if __name__ == "__main__":
+    main()

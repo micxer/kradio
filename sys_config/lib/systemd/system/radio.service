@@ -8,7 +8,7 @@ Type=simple
 User=kradio
 SupplementaryGroups=i2c
 WorkingDirectory=/home/kradio/raspiradio
-ExecStart=/home/kradio/raspiradio/.venv/bin/python -m prog.radio
+ExecStart=/home/kradio/raspiradio/.venv/bin/kradio
 
 [Install]
 WantedBy=multi-user.target

@@ -35,7 +35,7 @@ wheels = [
 [[package]]
 name = "kradio"
 version = "1.0.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "gpiod", marker = "sys_platform == 'linux'" },
     { name = "smbus2" },

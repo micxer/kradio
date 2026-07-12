@@ -14,3 +14,4 @@ jobs:
           python-version: "3.11"
       - run: uv sync --group dev
       - run: uv run mypy .
+      - run: uv run pytest -v

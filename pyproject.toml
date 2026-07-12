@@ -19,7 +19,13 @@ dev = [
 ]
 
 [tool.uv]
-package = false
+package = true
+
+[project.scripts]
+kradio = "kradio.radio:main"
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
 
 [build-system]
 requires = ["hatchling"]
