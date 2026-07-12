@@ -39,12 +39,16 @@ class TestGetStations:
             "This Name Is Way Over 15 Characters Long",
         ]
 
-    def test_ignores_url_and_comment_lines(self):
-        with patch("builtins.open", mock_open(read_data=M3U)):
-            stations = radio.get_stations()
-        for s in stations:
-            assert not s.startswith("http")
-            assert not s.startswith("#EXTM3U")
+    def test_malformed_extinf_without_comma_skipped(self):
+        # #EXTINF line with no comma → split(',',1) returns 1-element list → IndexError
+        # Production code currently crashes; this test documents the expected safe behaviour.
+        bad_m3u = "#EXTM3U\n#EXTINF:-1\nhttps://x.com/s1\n#EXTINF:-1,Good Station\nhttps://x.com/s2\n"
+        with patch("builtins.open", mock_open(read_data=bad_m3u)):
+            try:
+                stations = radio.get_stations()
+                assert stations == ["Good Station"]
+            except IndexError:
+                pytest.fail("get_stations() crashed on malformed #EXTINF line (no comma)")
 
     def test_empty_file_returns_empty_list(self):
         with patch("builtins.open", mock_open(read_data="")):
@@ -78,8 +82,7 @@ def test_build_line1_non_numeric_returns_fallback():
          patch("kradio.radio.time.strftime", return_value="08:30"), \
          patch("kradio.radio.time.sleep"):
         result = radio.build_line1()
-    assert result.startswith("08:30")
-    assert "   " in result  # no bars, just spaces
+    assert result == "08:30               "  # 5 + 15 spaces, no bars
 
 def test_build_line1_result_is_20_chars():
     with patch("kradio.radio.subprocess.check_output", return_value="60"), \
@@ -105,15 +108,21 @@ class TestBuildLine2Radio:
         assert result.startswith("(01) ")
         assert len(result) == 20
 
-    def test_two_digit_station_no_extra_pad(self):
-        result = self._call("2\n")
-        assert result.startswith("(02) ")
+    def test_two_digit_station_no_zero_pad(self):
+        m3u_10 = (
+            "#EXTM3U\n" +
+            "".join(f"#EXTINF:-1,Station {i}\nhttps://x.com/s{i}\n" for i in range(1, 11))
+        )
+        result = self._call("10\n", m3u=m3u_10)
+        assert result.startswith("(10) ")
+        assert len(result) == 20
 
     def test_name_exactly_15_not_truncated(self):
-        # "Exact15Chars!!" is 14 chars — make a 15-char name
-        m3u_15 = "#EXTM3U\n#EXTINF:-1,Exactly15Chars\nhttps://x.com/s1\n"
+        # "ExactlyFifteenX" is exactly 15 chars — neither >15 nor <15 branch taken
+        assert len("ExactlyFifteenX") == 15
+        m3u_15 = "#EXTM3U\n#EXTINF:-1,ExactlyFifteenX\nhttps://x.com/s1\n"
         result = self._call("1\n", m3u=m3u_15)
-        assert "Exactly15Chars" in result
+        assert result == "(01) ExactlyFifteenX"
 
     def test_name_over_15_truncated(self):
         result = self._call("4\n")

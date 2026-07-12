@@ -284,7 +284,13 @@ def get_stations() -> list[str]:
     logger.debug("get_stations")
     with open(str(radio_playlist), 'r') as f:
         lines = f.readlines()
-    return [line.split(',', 1)[1].strip() for line in lines if line.startswith('#EXTINF:')]
+    return [
+        parts[1].strip()
+        for line in lines
+        if line.startswith('#EXTINF:')
+        for parts in [line.split(',', 1)]
+        if len(parts) == 2
+    ]
 
 def build_line2_radio() -> str:
     logger.debug("build_line2_radio")
