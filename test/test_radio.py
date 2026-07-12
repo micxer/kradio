@@ -189,7 +189,7 @@ class TestGetIpDisplay:
 # ---------------------------------------------------------------------------
 class TestKeyNext:
     def setup_method(self):
-        radio.mode = 1
+        radio.mode = radio.MODE_RADIO
         radio.current_station = 3
         radio.station_count = 5
 
@@ -219,13 +219,13 @@ class TestKeyNext:
         assert any("play" in c for c in calls)
 
     def test_mode2_calls_mpc_next(self):
-        radio.mode = 2
+        radio.mode = radio.MODE_MP3
         with patch("kradio.radio.os.system") as mock_sys:
             radio.key_next(4)
         mock_sys.assert_called_once_with(radio.mpc["next"])
 
     def test_other_mode_does_nothing(self):
-        radio.mode = 0
+        radio.mode = radio.MODE_INIT
         with patch("kradio.radio.os.system") as mock_sys:
             radio.key_next(4)
         mock_sys.assert_not_called()
@@ -236,7 +236,7 @@ class TestKeyNext:
 # ---------------------------------------------------------------------------
 class TestKeyPrev:
     def setup_method(self):
-        radio.mode = 1
+        radio.mode = radio.MODE_RADIO
         radio.current_station = 3
         radio.station_count = 5
 
@@ -268,13 +268,13 @@ class TestKeyPrev:
         assert radio.current_station == 1
 
     def test_mode2_calls_mpc_prev(self):
-        radio.mode = 2
+        radio.mode = radio.MODE_MP3
         with patch("kradio.radio.os.system") as mock_sys:
             radio.key_prev(23)
         mock_sys.assert_called_once_with(radio.mpc["prev"])
 
     def test_other_mode_does_nothing(self):
-        radio.mode = 0
+        radio.mode = radio.MODE_INIT
         with patch("kradio.radio.os.system") as mock_sys:
             radio.key_prev(23)
         mock_sys.assert_not_called()
@@ -288,7 +288,7 @@ class TestStandbyMode:
     ACTIVE = 1
 
     def setup_method(self):
-        radio.mode = 1
+        radio.mode = radio.MODE_RADIO
         radio.display = _mock_display()
 
     def test_right_plus_standby_chord_reboots(self):
@@ -311,22 +311,22 @@ class TestStandbyMode:
         mock_shutdown.assert_called_once()
 
     def test_mode32_resumes_radio(self):
-        radio.mode = 32
+        radio.mode = radio.MODE_STANDBY
         with patch("kradio.radio._gpio_value", return_value=self.ACTIVE), \
              patch("kradio.radio.radio_mode") as mock_radio, \
              patch("kradio.radio.time.sleep"):
             radio.standby_mode(6)
-        assert radio.mode == 0
+        assert radio.mode == radio.MODE_INIT
         radio.display.backlight_on.assert_called_once()
         mock_radio.assert_called_once()
 
     def test_default_enters_standby(self):
-        radio.mode = 1
+        radio.mode = radio.MODE_RADIO
         with patch("kradio.radio._gpio_value", return_value=self.ACTIVE), \
              patch("kradio.radio.os.system") as mock_sys, \
              patch("kradio.radio.time.sleep"):
             radio.standby_mode(6)
-        assert radio.mode == 31
+        assert radio.mode == radio.MODE_ENTERING_STANDBY
         mock_sys.assert_called_once_with(radio.mpc["stop"])
 
 
