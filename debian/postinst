@@ -27,3 +27,13 @@ chown -R kradio:kradio /opt/kradio
 systemctl daemon-reload
 systemctl enable --now kradio.service
 systemctl enable kradio-lcd-shutdown.service
+
+echo ""
+echo "========================================================"
+echo " kradio installed."
+echo ""
+echo " ACTION REQUIRED: update /boot/config.txt manually for"
+echo " the HiFiBerry MiniAmp, then reboot."
+echo " See: https://github.com/micxer/kradio#installation"
+echo "========================================================"
+echo ""
