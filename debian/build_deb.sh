@@ -21,7 +21,7 @@ fpm -s dir -t deb \
   --package "dist/kradio_${VERSION}_all.deb" \
   dist/kradio-*.whl=/opt/kradio/ \
   conf/=/opt/kradio/conf/ \
-  sys_config/etc/asound.conf=/etc/asound.conf \
-  sys_config/etc/mpd.conf=/opt/kradio/etc/mpd.conf \
-  sys_config/lib/systemd/system/radio.service=/lib/systemd/system/kradio.service \
-  sys_config/lib/systemd/system/LCDaus_text.service=/lib/systemd/system/kradio-lcd-shutdown.service
+  packaging/asound.conf=/etc/asound.conf \
+  packaging/mpd.conf=/opt/kradio/etc/mpd.conf \
+  packaging/kradio.service=/lib/systemd/system/kradio.service \
+  packaging/kradio-lcd-shutdown.service=/lib/systemd/system/kradio-lcd-shutdown.service
