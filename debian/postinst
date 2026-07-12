@@ -17,6 +17,9 @@ python3 -m venv /opt/kradio/.venv
 /opt/kradio/.venv/bin/pip install /opt/kradio/kradio-*.whl
 
 # Apply mpd config (mpd owns /etc/mpd.conf so we can't ship it as a deb file)
+if [ -f /etc/mpd.conf ]; then
+    cp --backup=numbered /etc/mpd.conf /etc/mpd.conf.bak
+fi
 cp /opt/kradio/etc/mpd.conf /etc/mpd.conf
 
 chown -R kradio:kradio /opt/kradio

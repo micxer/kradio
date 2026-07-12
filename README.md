@@ -12,4 +12,18 @@ It can be operated using buttons on the radio itself or via WiFi using a smartph
 
 This is based on an article of the german [Make Magazin 1/19](https://www.heise.de/select/make/2019/1/1551100253897264).
 
+## Installation
+
+Download the latest `kradio_*_all.deb` from the [releases page](../../releases/latest) and install it:
+
+```sh
+sudo apt install ./kradio_*_all.deb
+```
+
+This installs the app to `/opt/kradio`, creates the `kradio` system user, installs all dependencies, and enables the `kradio` systemd service.
+
+### Manual step: boot configuration
+
+The HiFiBerry MiniAmp requires changes to `/boot/config.txt` that cannot be applied automatically by the package. Apply them once after install by merging the settings from [`packaging/config.txt`](packaging/config.txt) into your `/boot/config.txt`, then reboot.
+
 \* Affiliate Link
