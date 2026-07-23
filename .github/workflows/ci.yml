@@ -19,5 +19,9 @@ jobs:
       - run: uv run pytest -v
       - name: ShellCheck
         run: shellcheck debian/build_deb.sh debian/postinst debian/prerm debian/postrm
+      - name: Install zizmor
+        run: |
+          curl -sSL https://github.com/zizmorcore/zizmor/releases/download/v1.28.0/zizmor-x86_64-unknown-linux-gnu.tar.gz \
+            | tar -xz -C /usr/local/bin zizmor
       - name: zizmor
         run: zizmor --offline .github/workflows/
