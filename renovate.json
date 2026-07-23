@@ -5,6 +5,11 @@
       "matchDepTypes": ["requires-python"],
       "matchUpdateTypes": ["minor", "major"],
       "enabled": false
+    },
+    {
+      "matchManagers": ["pep621"],
+      "matchDepTypes": ["dependencies"],
+      "semanticCommitType": "fix"
     }
   ]
 }

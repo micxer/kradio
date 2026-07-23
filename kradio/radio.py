@@ -27,6 +27,7 @@ import sys
 import threading
 import time
 from datetime import date, timedelta
+from importlib.metadata import version as _pkg_version
 from typing import Any
 
 import gpiod  # type: ignore[import-not-found]
@@ -40,7 +41,7 @@ logger = logging.getLogger("radio")
 current_dir = os.path.realpath(__file__)
 parent_dir = os.path.realpath(current_dir + "/../..")
 
-version = "2023.1-xmas"
+version = _pkg_version("kradio")
 
 display_operating_instructions = False
 

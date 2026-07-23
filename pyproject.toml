@@ -16,6 +16,7 @@ dev = [
     "pytest>=9.0.3",
     "mock>=5.1.0",
     "mypy>=1.11.0",
+    "python-semantic-release>=9.0.0",
 ]
 
 [tool.uv]
@@ -26,6 +27,19 @@ kradio = "kradio.radio:main"
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:project.version"]
+branch = "main"
+upload_to_pypi = false
+build_command = "uv build && bash debian/build_deb.sh"
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = [
+    "^ci:",
+    "^chore:",
+    "^style:",
+]
 
 [build-system]
 requires = ["hatchling"]

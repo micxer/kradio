@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+
+systemctl disable --now kradio.service || true
+systemctl disable kradio-lcd-shutdown.service || true
