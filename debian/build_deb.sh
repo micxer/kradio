@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION=$(ls dist/kradio-*.whl | grep -oP '(?<=kradio-)[^-]+')
+WHEEL=$(ls dist/kradio-*.whl)
+VERSION=$(echo "$WHEEL" | grep -oP '(?<=kradio-)[^-]+')
 
 fpm -s dir -t deb \
   -n kradio -v "$VERSION" \
@@ -19,7 +20,7 @@ fpm -s dir -t deb \
   --before-remove debian/prerm \
   --after-remove debian/postrm \
   --package "dist/kradio_${VERSION}_all.deb" \
-  dist/kradio-*.whl=/opt/kradio/ \
+  "${WHEEL}=/opt/kradio/" \
   conf/=/opt/kradio/conf/ \
   packaging/asound.conf=/etc/asound.conf \
   packaging/mpd.conf=/opt/kradio/etc/mpd.conf \
