@@ -8,10 +8,20 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6.8.0
         with:
           python-version: "3.11"
       - run: uv sync --group dev
       - run: uv run mypy .
       - run: uv run pytest -v
+      - name: ShellCheck
+        run: shellcheck debian/build_deb.sh debian/postinst debian/prerm debian/postrm
+      - name: Install zizmor
+        run: |
+          curl -sSL https://github.com/zizmorcore/zizmor/releases/download/v1.28.0/zizmor-x86_64-unknown-linux-gnu.tar.gz \
+            | tar -xz -C /usr/local/bin zizmor
+      - name: zizmor
+        run: zizmor --offline .github/workflows/
