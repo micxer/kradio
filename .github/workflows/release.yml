@@ -43,6 +43,12 @@ jobs:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
         run: uv run semantic-release version --push --changelog --vcs-release
 
+      - name: Publish release artifacts
+        if: hashFiles('dist/*.whl') != ''
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: uv run semantic-release publish
+
       - name: Attest build provenance
         uses: actions/attest-build-provenance@0f67c3f4856b2e3261c31976d6725780e5e4c373 # v4.1.1
         if: hashFiles('dist/*.whl') != ''

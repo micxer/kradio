@@ -31,10 +31,11 @@ testpaths = ["test"]
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]
 branch = "main"
-upload_to_pypi = false
-upload_to_vcs_release = true
-dist_glob_patterns = ["*.whl", "*.tar.gz", "*.deb"]
 build_command = "uv build && bash debian/build_deb.sh"
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
+dist_glob_patterns = ["dist/*.whl", "dist/*.tar.gz", "dist/*.deb"]
 
 [tool.semantic_release.changelog]
 exclude_commit_patterns = [
