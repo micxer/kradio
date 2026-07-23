@@ -27,7 +27,7 @@ jobs:
       - run: uv sync --group dev
 
       - name: Install fpm
-        run: gem install fpm
+        run: sudo gem install fpm
 
       - name: Run semantic release
         env:
