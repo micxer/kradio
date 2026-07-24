@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.2 (2026-07-24)
+
+### Bug Fixes
+
+- **packaging**: Move build deps to deb depends to prevent dpkg lock deadlock in postinst
+  ([`a8f8037`](https://github.com/micxer/kradio/commit/a8f803755540502a8289a56d21c6c308ca5d4d73))
+
+
 ## v1.0.1 (2026-07-24)
 
 ### Bug Fixes
