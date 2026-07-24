@@ -2,7 +2,7 @@
 set -e
 
 # Install build deps needed to compile gpiod C extension natively on the Pi
-apt-get install -y gcc python3-dev libgpiod-dev
+apt-get install -y gcc python3-dev python3-venv libgpiod-dev
 
 # Create system user (idempotent)
 if ! id kradio > /dev/null 2>&1; then
