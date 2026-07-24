@@ -15,6 +15,10 @@ fpm -s dir -t deb \
   --depends i2c-tools \
   --depends python3 \
   --depends python3-pip \
+  --depends python3-venv \
+  --depends python3-dev \
+  --depends gcc \
+  --depends libgpiod-dev \
   --after-install debian/postinst \
   --before-remove debian/prerm \
   --after-remove debian/postrm \
