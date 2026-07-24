@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.1 (2026-07-24)
+
+### Bug Fixes
+
+- **packaging**: Resolve python3-venv at install time instead of as deb dependency
+  ([`47e6b3d`](https://github.com/micxer/kradio/commit/47e6b3dba94fb172aa7fba42818adbada38ddb57))
+
+
 ## v1.0.0 (2026-07-23)
 
 ### Bug Fixes

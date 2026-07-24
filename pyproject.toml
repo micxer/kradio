@@ -1,6 +1,6 @@
 [project]
 name = "kradio"
-version = "1.0.0"
+version = "1.0.1"
 description = "A simple kitchen webradio"
 authors = [{ name = "micxer", email = "micxer@micxer.de" }]
 license = { text = "MIT License" }
