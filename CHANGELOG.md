@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.4 (2026-08-02)
+
+### Bug Fixes
+
+- **packaging**: Load i2c-dev module in postinst and clarify boot config steps
+  ([`106931b`](https://github.com/micxer/kradio/commit/106931ba39b06fc316a97795a75b74cb64010a30))
+
+
 ## v1.0.3 (2026-08-02)
 
 ### Bug Fixes
