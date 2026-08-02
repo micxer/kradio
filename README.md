@@ -14,11 +14,16 @@ This is based on an article of the german [Make Magazin 1/19](https://www.heise.
 
 ## Installation
 
-Download the latest `kradio_*_all.deb` from the [releases page](../../releases/latest) and install it:
+Download the latest `kradio_*_all.deb` from the [releases page](../../releases/latest) and install it from `/tmp`:
 
 ```sh
+cd /tmp && curl -s https://api.github.com/repos/micxer/kradio/releases/latest \
+  | grep browser_download_url | grep '_all.deb' | cut -d'"' -f4 \
+  | xargs curl -LO
 sudo apt install ./kradio_*_all.deb
 ```
+
+> **Note:** install from `/tmp`, not your home directory — `apt` drops privileges to `_apt` for sandboxing and cannot read files in home directories (permission denied).
 
 This installs the app to `/opt/kradio`, creates the `kradio` system user, installs all dependencies, and enables the `kradio` systemd service.
 
