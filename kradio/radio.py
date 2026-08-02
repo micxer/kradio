@@ -46,7 +46,7 @@ display_operating_instructions = False
 
 radio_playlist = parent_dir + "/conf/radio_sender.m3u"
 
-PH = "kradio@kradio"
+PH = "kradio@localhost"
 
 mpc = {
     "clear"         : "mpc -h " + str(PH) + " clear",
