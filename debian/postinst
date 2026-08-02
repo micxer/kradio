@@ -24,6 +24,7 @@ if [ -f /etc/mpd.conf ]; then
     cp --backup=numbered /etc/mpd.conf /etc/mpd.conf.bak
 fi
 cp /opt/kradio/etc/mpd.conf /etc/mpd.conf
+systemctl restart mpd.service
 
 chown -R kradio:kradio /opt/kradio
 chmod +x /usr/local/bin/kradio-configure-boot
