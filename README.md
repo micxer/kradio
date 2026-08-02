@@ -34,6 +34,32 @@ Requires the [GitHub CLI](https://cli.github.com/).
 
 ### Manual step: boot configuration
 
-The HiFiBerry MiniAmp requires changes to `/boot/config.txt` that cannot be applied automatically by the package. Apply them once after install by merging the settings from [`packaging/config.txt`](packaging/config.txt) into your `/boot/config.txt`, then reboot.
+Edit `/boot/firmware/config.txt`. Add the required HiFiBerry settings and apply the optional boot optimizations for a headless Pi Zero W, then reboot.
+
+All settings go in the `[all]` section at the bottom of the file.
+
+**Required — HiFiBerry MiniAmp:**
+
+```ini
+[all]
+dtparam=i2c_arm=on
+dtparam=i2s=on
+dtoverlay=hifiberry-dac
+```
+
+**Optional — faster boot (headless, no camera, no display):**
+
+```ini
+[all]
+camera_auto_detect=0      # stop CSI camera probe
+display_auto_detect=0     # stop DSI display probe
+force_eeprom_read=0       # skip HAT EEPROM probe
+dtoverlay=disable-bt      # disable Bluetooth, speeds up UART init
+gpu_mem=16                # minimum GPU RAM (no graphics needed)
+disable_splash=1          # remove boot splash screen
+dtparam=audio=off         # disable bcm2835 audio (kradio uses HiFiBerry)
+```
+
+Note: if `dtparam=audio=on` exists earlier in the file, the `dtparam=audio=off` in `[all]` overrides it — sections are cumulative, last write wins.
 
 \* Affiliate Link
