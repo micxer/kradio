@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.5 (2026-08-02)
+
+### Bug Fixes
+
+- Set ALSA master volume before playing startup sound
+  ([`d18a354`](https://github.com/micxer/kradio/commit/d18a35496ec5ff89d8c8a5d00c8b0511c773eb00))
+
+
 ## v1.1.4 (2026-08-02)
 
 ### Bug Fixes
