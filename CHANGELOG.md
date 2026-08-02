@@ -2,6 +2,17 @@
 
 <!-- version list -->
 
+## v1.1.1 (2026-08-02)
+
+### Bug Fixes
+
+- Resolve conf/ and music/ paths relative to KRADIO_HOME
+  ([`77946cd`](https://github.com/micxer/kradio/commit/77946cd3d32b982dea919271d133f558c965c5fa))
+
+- Update mpd paths and add service ordering dependency
+  ([`0731484`](https://github.com/micxer/kradio/commit/073148466c59271923be90d462b9ca42af31355d))
+
+
 ## v1.1.0 (2026-08-02)
 
 ### Features
