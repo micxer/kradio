@@ -48,6 +48,7 @@ radio_playlist = parent_dir + "/conf/radio_sender.m3u"
 
 PH = "kradio@localhost"
 
+
 mpc = {
     "clear"         : "mpc -h " + str(PH) + " clear",
     "update"        : "mpc -h " + str(PH) + " update",
@@ -150,8 +151,7 @@ def toggle_radio_mp3(pin: int) -> None:
     radio_mode()
 
 def _wait_for_mpd(retries: int = 30, delay: float = 1.0) -> None:
-    host, password = PH.split("@", 1) if "@" in PH else (PH, None)
-    cmd = ["mpc", "-h", (password + "@" + host) if password else host, "ping"]
+    cmd = ["mpc", "-h", PH, "ping"]
     for _ in range(retries):
         if subprocess.run(cmd, capture_output=True).returncode == 0:
             return
@@ -333,9 +333,7 @@ def build_line2_mp3() -> str:
 
 def build_line3() -> str:
     logger.debug("build_line3")
-    host, password = PH.split("@", 1) if "@" in PH else (PH, None)
-    cmd = ["mpc", "-h", (password + "@" + host) if password else host,
-           "current", "-f", "%title%"]
+    cmd = ["mpc", "-h", PH, "current", "-f", "%title%"]
     result = subprocess.run(cmd, capture_output=True, text=True)
     title = result.stdout.strip()
     return title if title else "---"
