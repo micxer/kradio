@@ -9,6 +9,12 @@ usermod -aG i2c kradio
 
 mkdir -p /opt/kradio/music
 
+# Ensure i2c-dev module loads on boot
+if ! grep -q '^i2c-dev' /etc/modules; then
+    echo 'i2c-dev' >> /etc/modules
+fi
+modprobe i2c-dev || true
+
 # Build venv and install kradio wheel (compiles gpiod from source natively)
 python3 -m venv /opt/kradio/.venv
 /opt/kradio/.venv/bin/pip install /opt/kradio/kradio-*.whl
@@ -29,8 +35,23 @@ echo ""
 echo "========================================================"
 echo " kradio installed."
 echo ""
-echo " ACTION REQUIRED: update /boot/config.txt manually for"
-echo " the HiFiBerry MiniAmp, then reboot."
-echo " See: https://github.com/micxer/kradio#installation"
+echo " ACTION REQUIRED: add to the [all] section of"
+echo " /boot/firmware/config.txt if not already present,"
+echo " then reboot:"
+echo ""
+echo "   [all]"
+echo "   dtparam=i2c_arm=on"
+echo "   dtparam=i2s=on"
+echo "   dtoverlay=hifiberry-dac"
+echo ""
+echo " Optional - faster boot (headless, no camera/display):"
+echo ""
+echo "   camera_auto_detect=0"
+echo "   display_auto_detect=0"
+echo "   force_eeprom_read=0"
+echo "   dtoverlay=disable-bt"
+echo "   gpu_mem=16"
+echo "   disable_splash=1"
+echo "   dtparam=audio=off"
 echo "========================================================"
 echo ""
