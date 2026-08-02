@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.3 (2026-08-02)
+
+### Bug Fixes
+
+- Require Python 3.13+ matching Raspbian Trixie default
+  ([`6a00f0c`](https://github.com/micxer/kradio/commit/6a00f0ca02fba4ee6d0c762f7ea2e9125df76191))
+
+
 ## v1.0.2 (2026-07-24)
 
 ### Bug Fixes
