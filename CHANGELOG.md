@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.2.0 (2026-08-02)
+
+### Bug Fixes
+
+- Correct password@host argument order for mpc subprocess calls
+  ([`8f818f6`](https://github.com/micxer/kradio/commit/8f818f64893af5d62fa3be5df7bbaa9a8981a834))
+
+### Features
+
+- Bind MPD to all interfaces for remote control access
+  ([`797493e`](https://github.com/micxer/kradio/commit/797493e10282bd95721264a69927ce397488c5e4))
+
+
 ## v1.1.5 (2026-08-02)
 
 ### Bug Fixes
