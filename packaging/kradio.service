@@ -1,7 +1,8 @@
 # Unit file for kradio
 [Unit]
 Description=KRadio
-After=network.target
+After=network.target mpd.service
+Wants=mpd.service
 
 [Service]
 Type=simple
