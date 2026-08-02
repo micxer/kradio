@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v1.1.3 (2026-08-02)
+
+### Bug Fixes
+
+- Connect mpc to localhost instead of hostname
+  ([`d5e52c9`](https://github.com/micxer/kradio/commit/d5e52c940bc1e30fcdf95a833db733de8e9a52a6))
+
+- Wait for MPD before startup and restart MPD after config update
+  ([`dd0b9ba`](https://github.com/micxer/kradio/commit/dd0b9bac8fa73a7567a56de36e23d7d2d986587f))
+
+### Chores
+
+- **deps**: Bump gitpython from 3.1.52 to 3.1.54
+  ([`17547a7`](https://github.com/micxer/kradio/commit/17547a707cad44f3a99fbb3a2c6cda6204d7aa4c))
+
+
 ## v1.1.2 (2026-08-02)
 
 ### Bug Fixes
