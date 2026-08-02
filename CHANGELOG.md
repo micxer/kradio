@@ -2,6 +2,24 @@
 
 <!-- version list -->
 
+## v1.1.4 (2026-08-02)
+
+### Bug Fixes
+
+- Build_line3 returns stream title correctly
+  ([`a13b33c`](https://github.com/micxer/kradio/commit/a13b33cd58494b404f9781b04accc9d6fcb4ebbd))
+
+### Documentation
+
+- Install deb from /tmp to avoid apt permission denied
+  ([`ab6dd03`](https://github.com/micxer/kradio/commit/ab6dd03eff1b23d4f8f2a80dc7b1384ea8578973))
+
+### Testing
+
+- Update TestBuildLine3 for subprocess.run and new return logic
+  ([`00b062c`](https://github.com/micxer/kradio/commit/00b062c0970257632afc878f8204c80736379a50))
+
+
 ## v1.1.3 (2026-08-02)
 
 ### Bug Fixes
