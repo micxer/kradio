@@ -17,6 +17,7 @@ dev = [
     "mock>=5.1.0",
     "mypy>=1.11.0",
     "python-semantic-release>=9.0.0",
+    "pylint>=4.0.6",
 ]
 
 [tool.uv]
@@ -43,6 +44,22 @@ exclude_commit_patterns = [
     "^chore:",
     "^style:",
 ]
+
+[tool.pylint.messages_control]
+disable = "all"
+enable = [
+    "W0601",  # undefined-variable (use before assignment)
+    "W0604",  # global-at-module-level
+    "W0611",  # unused-import
+    "W0612",  # unused-variable
+    "W0621",  # redefined-outer-name
+    "W0622",  # redefined-builtin
+    "E0102",  # function/class redefined
+    "E0601",  # used-before-assignment
+]
+
+[tool.pylint.imports]
+ignored-modules = ["gpiod"]
 
 [build-system]
 requires = ["hatchling"]

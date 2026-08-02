@@ -15,6 +15,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: uv sync --group dev
+      - run: uv run pylint kradio/
       - run: uv run mypy .
       - run: uv run pytest -v
       - name: ShellCheck
