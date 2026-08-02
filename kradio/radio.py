@@ -335,13 +335,9 @@ def build_line3() -> str:
     host, password = PH.split("@", 1) if "@" in PH else (PH, None)
     cmd = ["mpc", "-h", (password + "@" + host) if password else host,
            "current", "-f", "%title%"]
-    try:
-        song_info = subprocess.check_output(cmd, text=True)
-    except subprocess.CalledProcessError:
-        return "---"
-    if "#" not in song_info:
-        return song_info.strip("\n").strip().lstrip()
-    return "---"
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    title = result.stdout.strip()
+    return title if title else "---"
 
 def build_line4() -> str:
     logger.debug("build_line4")
