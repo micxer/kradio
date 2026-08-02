@@ -28,4 +28,5 @@ fpm -s dir -t deb \
   packaging/asound.conf=/etc/asound.conf \
   packaging/mpd.conf=/opt/kradio/etc/mpd.conf \
   packaging/kradio.service=/lib/systemd/system/kradio.service \
-  packaging/kradio-lcd-shutdown.service=/lib/systemd/system/kradio-lcd-shutdown.service
+  packaging/kradio-lcd-shutdown.service=/lib/systemd/system/kradio-lcd-shutdown.service \
+  packaging/kradio-configure-boot=/usr/local/bin/kradio-configure-boot

@@ -32,9 +32,16 @@ gh attestation verify kradio_*_all.deb -R micxer/kradio
 
 Requires the [GitHub CLI](https://cli.github.com/).
 
-### Manual step: boot configuration
+### Boot configuration
 
-Edit `/boot/firmware/config.txt`. Add the required HiFiBerry settings and apply the optional boot optimizations for a headless Pi Zero W, then reboot.
+Run the included script to configure `/boot/firmware/config.txt` automatically, then reboot:
+
+```sh
+sudo kradio-configure-boot
+sudo reboot
+```
+
+The script applies required HiFiBerry settings and optional boot optimizations. If you prefer to edit manually:
 
 All settings go in the `[all]` section at the bottom of the file.
 

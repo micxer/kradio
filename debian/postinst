@@ -26,6 +26,7 @@ fi
 cp /opt/kradio/etc/mpd.conf /etc/mpd.conf
 
 chown -R kradio:kradio /opt/kradio
+chmod +x /usr/local/bin/kradio-configure-boot
 
 systemctl daemon-reload
 systemctl enable --now kradio.service
@@ -35,23 +36,12 @@ echo ""
 echo "========================================================"
 echo " kradio installed."
 echo ""
-echo " ACTION REQUIRED: add to the [all] section of"
-echo " /boot/firmware/config.txt if not already present,"
-echo " then reboot:"
+echo " ACTION REQUIRED: configure boot settings, then reboot."
 echo ""
-echo "   [all]"
-echo "   dtparam=i2c_arm=on"
-echo "   dtparam=i2s=on"
-echo "   dtoverlay=hifiberry-dac"
+echo " Run the included script to apply required HiFiBerry"
+echo " settings and optional boot optimizations automatically:"
 echo ""
-echo " Optional - faster boot (headless, no camera/display):"
-echo ""
-echo "   camera_auto_detect=0"
-echo "   display_auto_detect=0"
-echo "   force_eeprom_read=0"
-echo "   dtoverlay=disable-bt"
-echo "   gpu_mem=16"
-echo "   disable_splash=1"
-echo "   dtparam=audio=off"
+echo "   sudo kradio-configure-boot"
+echo "   sudo reboot"
 echo "========================================================"
 echo ""

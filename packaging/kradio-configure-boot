@@ -1,0 +1,71 @@
+#!/bin/sh
+# Configure /boot/firmware/config.txt for kradio (HiFiBerry MiniAmp on Pi Zero W)
+set -e
+
+CONFIG=/boot/firmware/config.txt
+
+if [ ! -f "$CONFIG" ]; then
+    echo "Error: $CONFIG not found" >&2
+    exit 1
+fi
+
+# Append a line to [all] section if not already present
+add_setting() {
+    key="$1"
+    value="$2"
+    line="${key}=${value}"
+
+    # Skip if already present (any value)
+    if grep -qE "^${key}=" "$CONFIG"; then
+        existing=$(grep -E "^${key}=" "$CONFIG" | tail -1)
+        if [ "$existing" = "$line" ]; then
+            echo "  already set: $line"
+        else
+            echo "  updating: $existing -> $line"
+            sed -i "s|^${key}=.*|${line}|" "$CONFIG"
+        fi
+        return
+    fi
+
+    # Add under [all] if present, else append
+    if grep -q '^\[all\]' "$CONFIG"; then
+        sed -i "/^\[all\]/a ${line}" "$CONFIG"
+    else
+        printf '\n[all]\n%s\n' "$line" >> "$CONFIG"
+    fi
+    echo "  added: $line"
+}
+
+add_overlay() {
+    overlay="$1"
+    if grep -qE "^dtoverlay=${overlay}$" "$CONFIG"; then
+        echo "  already set: dtoverlay=${overlay}"
+        return
+    fi
+    if grep -q '^\[all\]' "$CONFIG"; then
+        sed -i "/^\[all\]/a dtoverlay=${overlay}" "$CONFIG"
+    else
+        printf '\n[all]\ndtoverlay=%s\n' "$overlay" >> "$CONFIG"
+    fi
+    echo "  added: dtoverlay=${overlay}"
+}
+
+echo "Configuring $CONFIG for kradio..."
+echo ""
+echo "Required (HiFiBerry MiniAmp):"
+add_setting dtparam=i2c_arm on
+add_setting dtparam=i2s on
+add_overlay hifiberry-dac
+
+echo ""
+echo "Optional boot optimizations (headless Pi Zero W):"
+add_setting camera_auto_detect 0
+add_setting display_auto_detect 0
+add_setting force_eeprom_read 0
+add_overlay disable-bt
+add_setting gpu_mem 16
+add_setting disable_splash 1
+add_setting dtparam=audio off
+
+echo ""
+echo "Done. Reboot for changes to take effect."
