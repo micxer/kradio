@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.0 (2026-08-02)
+
+### Features
+
+- **packaging**: Add kradio-configure-boot script for automated boot config
+  ([`2d349df`](https://github.com/micxer/kradio/commit/2d349df2d7e86a150250b6b2965109c3b8c64e9e))
+
+
 ## v1.0.4 (2026-08-02)
 
 ### Bug Fixes
