@@ -140,21 +140,27 @@ class TestBuildLine2Radio:
 # build_line3()
 # ---------------------------------------------------------------------------
 class TestBuildLine3:
+    def _mock_run(self, stdout: str, returncode: int = 0) -> MagicMock:
+        result = MagicMock()
+        result.stdout = stdout
+        result.returncode = returncode
+        return result
+
     def test_normal_song_stripped(self):
-        with patch("kradio.radio.subprocess.check_output", return_value="  My Song  \n"):
+        with patch("kradio.radio.subprocess.run", return_value=self._mock_run("  My Song  \n")):
             assert radio.build_line3() == "My Song"
 
-    def test_hash_in_output_returns_dash(self):
-        with patch("kradio.radio.subprocess.check_output", return_value="http://stream/#tag\n"):
+    def test_empty_output_returns_dash(self):
+        with patch("kradio.radio.subprocess.run", return_value=self._mock_run("\n")):
             assert radio.build_line3() == "---"
 
-    def test_empty_string(self):
-        with patch("kradio.radio.subprocess.check_output", return_value="\n"):
-            assert radio.build_line3() == ""
-
-    def test_extinf_style_hash_triggers_filter(self):
-        with patch("kradio.radio.subprocess.check_output", return_value="#EXTINF:-1,title\n"):
+    def test_mpc_nonzero_returns_dash(self):
+        with patch("kradio.radio.subprocess.run", return_value=self._mock_run("", returncode=1)):
             assert radio.build_line3() == "---"
+
+    def test_stream_title_with_artist(self):
+        with patch("kradio.radio.subprocess.run", return_value=self._mock_run("Artist - Track\n")):
+            assert radio.build_line3() == "Artist - Track"
 
 
 # ---------------------------------------------------------------------------
