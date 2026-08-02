@@ -428,7 +428,7 @@ def _event_loop() -> None:
 # Entry point      #
 ####################
 def main() -> None:
-    global display, _gpio_request, _KEY_CALLBACKS
+    global display, _gpio_request, _KEY_CALLBACKS, mode
 
     display = DisplayManager()
     startup_mode()
