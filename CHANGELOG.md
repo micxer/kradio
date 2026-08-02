@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.1.2 (2026-08-02)
+
+### Bug Fixes
+
+- Declare mode as global in main() to avoid UnboundLocalError
+  ([`6861803`](https://github.com/micxer/kradio/commit/6861803102e09d59f824b24005328a397ab91c4b))
+
+
 ## v1.1.1 (2026-08-02)
 
 ### Bug Fixes
