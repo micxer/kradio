@@ -149,8 +149,19 @@ def toggle_radio_mp3(pin: int) -> None:
     update_station_count()
     radio_mode()
 
+def _wait_for_mpd(retries: int = 30, delay: float = 1.0) -> None:
+    host, password = PH.split("@", 1) if "@" in PH else (PH, None)
+    cmd = ["mpc", "-h", (password + "@" + host) if password else host, "ping"]
+    for _ in range(retries):
+        if subprocess.run(cmd, capture_output=True).returncode == 0:
+            return
+        logger.warning("MPD not ready, retrying...")
+        time.sleep(delay)
+    logger.error("MPD did not become ready after %d retries", retries)
+
 def startup_mode() -> None:
     logger.debug("startup_mode")
+    _wait_for_mpd()
     os.system(mpc["volumestartup"])
     os.system(mpc["clear"])
     os.system(mpc["update"])
@@ -321,7 +332,13 @@ def build_line2_mp3() -> str:
 
 def build_line3() -> str:
     logger.debug("build_line3")
-    song_info = subprocess.check_output([mpc["songinfo"]], shell=True, text=True)
+    host, password = PH.split("@", 1) if "@" in PH else (PH, None)
+    cmd = ["mpc", "-h", (password + "@" + host) if password else host,
+           "current", "-f", "%title%"]
+    try:
+        song_info = subprocess.check_output(cmd, text=True)
+    except subprocess.CalledProcessError:
+        return "---"
     if "#" not in song_info:
         return song_info.strip("\n").strip().lstrip()
     return "---"
