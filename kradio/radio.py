@@ -38,8 +38,7 @@ from .display_manager import DisplayManager
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger("radio")
 
-current_dir = os.path.realpath(__file__)
-parent_dir = os.path.realpath(current_dir + "/../..")
+parent_dir = os.environ.get("KRADIO_HOME", "/opt/kradio")
 
 version = _pkg_version("kradio")
 
