@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.2.2 (2026-09-22)
+
+### Bug Fixes
+
+- Restore startup gain and full volume range
+  ([`edd3e30`](https://github.com/micxer/kradio/commit/edd3e30ea9f55ae3b0906d28a5aba4e473900b48))
+
+
 ## v1.2.1 (2026-09-22)
 
 ### Bug Fixes
