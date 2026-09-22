@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.2.1 (2026-09-22)
+
+### Bug Fixes
+
+- Use software mixer for stable MPD volume
+  ([`2d26bec`](https://github.com/micxer/kradio/commit/2d26becc2c75f8b40233405de95ce3708d95009b))
+
+### Chores
+
+- **deps**: Bump gitpython from 3.1.54 to 3.1.59
+  ([`31341b0`](https://github.com/micxer/kradio/commit/31341b005b97edb7f03ea3988601a3c9ab36e960))
+
+
 ## v1.2.0 (2026-08-02)
 
 ### Bug Fixes
