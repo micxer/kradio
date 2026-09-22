@@ -162,11 +162,11 @@ def _wait_for_mpd(retries: int = 30, delay: float = 1.0) -> None:
 def startup_mode() -> None:
     logger.debug("startup_mode")
     _wait_for_mpd()
-    os.system("amixer -q sset Master 20%")
+    os.system("amixer -q sset Master 100%")
     os.system(mpc["volumestartup"])
     os.system(mpc["clear"])
     os.system(mpc["update"])
-    os.system('mpg321 --gain 100 ' + parent_dir + '/conf/StartUp.mp3')
+    os.system('mpg321 --gain 20 ' + parent_dir + '/conf/StartUp.mp3')
 
 def radio_mode() -> None:
     logger.debug("radio_mode")
